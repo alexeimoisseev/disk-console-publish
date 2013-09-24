@@ -17,8 +17,8 @@ PUBLISHCMD='<propertyupdate xmlns="DAV:"><set><prop><public_url xmlns="urn:yande
 TMPFILE=$(mktemp -t DSK)
 echo $PUBLISHCMD >$TMPFILE
 
-curl -s "https://$LOGIN:$PASS@webdav.yandex.ru/$SUBFOLDER/$FILENAME" -X PUT -d @$FILE
+curl -s "https://$LOGIN:$PASS@webdav.yandex.ru/$SUBFOLDER/$FILENAME" --upload-file $FILE
 
-curl -s "https://$LOGIN:$PASS@webdav.yandex.ru/$SUBFOLDER/$FILENAME" -X PROPPATCH -d @$TMPFILE | egrep -o 'http://yadi\.sk/d/[a-zA-Z0-9_]+'
+curl -s "https://$LOGIN:$PASS@webdav.yandex.ru/$SUBFOLDER/$FILENAME" -X PROPPATCH -d @$TMPFILE | egrep -o 'http://yadi\.sk/d/[a-zA-Z0-9_\-]+'
 rm -f $TMPFILE
 
