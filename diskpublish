@@ -1,0 +1,24 @@
+#!/bin/bash
+
+LOGIN=your_login
+PASS=your_password
+HOST=webdav.yandex.ru
+SUBFOLDER=/public
+
+if [ "$#" -ne "1" ]; then
+   echo "Usage: $0 <file>"
+   exit 1
+fi
+
+FILE=$1
+FILENAME=$(basename $FILE)
+PUBLISHCMD='<propertyupdate xmlns="DAV:"><set><prop><public_url xmlns="urn:yandex:disk:meta">true</public_url></prop></set></propertyupdate>'
+
+TMPFILE=$(mktemp -t DSK)
+echo $PUBLISHCMD >$TMPFILE
+
+curl -s "https://$LOGIN:$PASS@webdav.yandex.ru/$SUBFOLDER/$FILENAME" -X PUT -d @$FILE
+
+curl -s "https://$LOGIN:$PASS@webdav.yandex.ru/$SUBFOLDER/$FILENAME" -X PROPPATCH -d @$TMPFILE | egrep -o 'http://yadi\.sk/d/[a-zA-Z0-9_]+'
+rm -f $TMPFILE
+
