@@ -3,7 +3,7 @@ set -e
 
 HOST=webdav.yandex.ru
 SUBFOLDER=/public
-MKTEMP_FILE="mktemp -t DSK"
+MKTEMP_FILE="mktemp -t XXX"
 
 test -f ~/.diskpublish.conf || { echo -e "Missing file ~/.diskpublish.conf. Create it and fill in your login password in this way:\nLOGIN=***\nPASS=***" >&2; exit 1; }
 . ~/.diskpublish.conf
