@@ -1,7 +1,9 @@
 #!/bin/bash
+set -e
 
 HOST=webdav.yandex.ru
 SUBFOLDER=/public
+MKTEMP_FILE="mktemp -t DSK"
 
 test -f ~/.diskpublish.conf || { echo -e "Missing file ~/.diskpublish.conf. Create it and fill in your login password in this way:\nLOGIN=***\nPASS=***" >&2; exit 1; }
 . ~/.diskpublish.conf
@@ -14,11 +16,12 @@ FILE=$1
 FILENAME=$(basename $FILE)
 PUBLISHCMD='<propertyupdate xmlns="DAV:"><set><prop><public_url xmlns="urn:yandex:disk:meta">true</public_url></prop></set></propertyupdate>'
 
-TMPFILE=$(mktemp -t DSK)
+TMPFILE=$($MKTEMP_FILE)
 echo $PUBLISHCMD >$TMPFILE
 
 curl -s "https://$LOGIN:$PASS@webdav.yandex.ru/$SUBFOLDER/$FILENAME" --upload-file $FILE 
 
 curl -s "https://$LOGIN:$PASS@webdav.yandex.ru/$SUBFOLDER/$FILENAME" -X PROPPATCH -d @$TMPFILE | egrep -o 'http://yadi\.sk/d/[a-zA-Z0-9_\-]+'
+
 rm -f $TMPFILE
 
